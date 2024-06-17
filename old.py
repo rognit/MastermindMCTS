@@ -18,23 +18,9 @@ def generate_random_guess():
     return random.choices(COLORS, k=NB_PINS)
 
 
-def evaluate_proposal(proposal, secret_code):
-    exact = 0
-    proposal_remaining = []
-    secret_code_remaining = []
-
-    for p, s in zip(proposal, secret_code):
-        if p == s:
-            exact += 1
-        else:
-            proposal_remaining.append(p)
-            secret_code_remaining.append(s)
-
-    proposal_count = Counter(proposal_remaining)
-    secret_code_count = Counter(secret_code_remaining)
-    partial = sum(min(proposal_count[color], secret_code_count[color]) for color in proposal_count)
-
-    return exact, partial
+def evaluate_proposal(guess, secret_code):
+    exact = sum([1 for i in range(len(secret_code)) if guess[i] == secret_code[i]])
+    return exact, sum([min(guess.count(j), secret_code.count(j)) for j in set(guess)]) - exact
 
 
 def update_possible_codes(possible_codes, last_proposal, black_pins, white_pins):
