@@ -28,7 +28,6 @@ def select(node):
 
     if chosen_guess_node.children:
         feedback_nodes = chosen_guess_node.children
-
         probas = [node.score() for node in feedback_nodes]
         chosen_feedback_node = np.random.choice(feedback_nodes, p=probas)
         return select(chosen_feedback_node)
@@ -44,8 +43,7 @@ def backpropagate(node, total_moves):
 
 
 
-def mcts_training(node, num_iterations, parameters):
-
+def mcts_training(node, num_iterations):
     for i in range(num_iterations+1):
         if i % 10 == 0:
             bluelog(f"\nITERATION {i}/{num_iterations}")
@@ -74,7 +72,7 @@ parameters = {
     "num_colors": 3
 }
 root = FeedbackNode(parameters)
-mcts_training(root, 10, parameters)
+mcts_training(root, 500)
 
 
 print("\n\n\n")
@@ -98,7 +96,7 @@ def play_with_mcts(parameters, root, n):
                 return guess_node.moves
             if not guess_node.children:
                 redlog("RETRAINING")
-                mcts_training(guess_node, 100, parameters)
+                mcts_training(node, 100, parameters)
 
             for child in guess_node.children:
                 if child.feedback == feedback:
